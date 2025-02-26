@@ -1,6 +1,8 @@
 #include <iostream>
 #include <vector>
 #include <algorithm>
+#include <cstdlib>
+#include <ctime>
 using namespace std;
 
 // Recursive Binary Search
@@ -46,54 +48,77 @@ int sequentialSearch(const vector<int>& arr, int target) {
 }
 
 int main() {
-    vector<int> arr = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
-    int target1 = 6; // An item that is in the list
-    int target2 = 20; // An item that is not in the list
+    srand(time(0)); // Seed for random number generation
+    vector<int> arr;
+
+    // Fill vector with random numbers in range 1-100
+    for (int i = 0; i < 10; ++i) {
+        arr.push_back(rand() % 100 + 1);
+    }
+
+    // Sort the vector before performing binary search
+    sort(arr.begin(), arr.end());
+
+    // Print contents of the vector
+    cout << "Vector contents: ";
+    for (int num : arr) {
+        cout << num << " ";
+    }
+    cout << endl;
+
+    // Select a target that exists in the array
+    int target1 = arr[rand() % arr.size()];
+    // Generate a target that may not exist
+    int target2 = rand() % 100 + 1;
+    cout << "Target 1 (guaranteed in array): " << target1 << endl;
+    cout << "Target 2 (randomly chosen): " << target2 << endl;
 
     // Recursive Binary Search
     int result = recursiveBinarySearch(arr, target1, 0, arr.size() - 1);
     if (result != -1) {
-        cout << "Recursive Binary Search: Element found at index: " << result << endl;
+        cout << "Recursive Binary Search: " << target1 << " found at location " << result << endl;
     } else {
-        cout << "Recursive Binary Search: Element not found in the array." << endl;
-    }
-
-    result = recursiveBinarySearch(arr, target2, 0, arr.size() - 1);
-    if (result != -1) {
-        cout << "Recursive Binary Search: Element found at index: " << result << endl;
-    } else {
-        cout << "Recursive Binary Search: Element not found in the array." << endl;
+        cout << "Recursive Binary Search: " << target1 << " was not found" << endl;
     }
 
     // Iterative Binary Search
     result = iterativeBinarySearch(arr, target1);
     if (result != -1) {
-        cout << "Iterative Binary Search: Element found at index: " << result << endl;
+        cout << "Iterative Binary Search: " << target1 << " found at location " << result << endl;
     } else {
-        cout << "Iterative Binary Search: Element not found in the array." << endl;
-    }
-
-    result = iterativeBinarySearch(arr, target2);
-    if (result != -1) {
-        cout << "Iterative Binary Search: Element found at index: " << result << endl;
-    } else {
-        cout << "Iterative Binary Search: Element not found in the array." << endl;
+        cout << "Iterative Binary Search: " << target1 << " was not found" << endl;
     }
 
     // Sequential Search
     result = sequentialSearch(arr, target1);
     if (result != -1) {
-        cout << "Sequential Search: Element found at index: " << result << endl;
+        cout << "Sequential Search: " << target1 << " found at location " << result << endl;
     } else {
-        cout << "Sequential Search: Element not found in the array." << endl;
+        cout << "Sequential Search: " << target1 << " was not found" << endl;
+    }
+
+    // Test with target2
+    result = recursiveBinarySearch(arr, target2, 0, arr.size() - 1);
+    if (result != -1) {
+        cout << "Recursive Binary Search: " << target2 << " found at location " << result << endl;
+    } else {
+        cout << "Recursive Binary Search: " << target2 << " was not found" << endl;
+    }
+
+    result = iterativeBinarySearch(arr, target2);
+    if (result != -1) {
+        cout << "Iterative Binary Search: " << target2 << " found at location " << result << endl;
+    } else {
+        cout << "Iterative Binary Search: " << target2 << " was not found" << endl;
     }
 
     result = sequentialSearch(arr, target2);
     if (result != -1) {
-        cout << "Sequential Search: Element found at index: " << result << endl;
+        cout << "Sequential Search: " << target2 << " found at location " << result << endl;
     } else {
-        cout << "Sequential Search: Element not found in the array." << endl;
+        cout << "Sequential Search: " << target2 << " was not found" << endl;
     }
 
     return 0;
 }
+
