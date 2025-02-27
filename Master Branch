@@ -1,99 +1,78 @@
 #include <iostream>
 #include <vector>
 #include <algorithm>
+#include <chrono>
+#include <cstdlib>
 using namespace std;
 
 // Recursive Binary Search
-int recursiveBinarySearch(const vector<int>& arr, int target, int low, int high) {
-    if (low <= high) {
-        int mid = low + (high - low) / 2;
-        if (arr[mid] == target) {
-            return mid; // Target found
-        } else if (arr[mid] < target) {
-            return recursiveBinarySearch(arr, target, mid + 1, high);
-        } else {
-            return recursiveBinarySearch(arr, target, low, mid - 1);
-        }
-    }
-    return -1; // Target not found
+int recursiveBinarySearch(const vector<int>& arr, int left, int right, int target) {
+    if (left > right) return -1;
+    int mid = left + (right - left) / 2;
+    if (arr[mid] == target) return mid;
+    if (arr[mid] > target) return recursiveBinarySearch(arr, left, mid - 1, target);
+    return recursiveBinarySearch(arr, mid + 1, right, target);
 }
 
 // Iterative Binary Search
 int iterativeBinarySearch(const vector<int>& arr, int target) {
-    int low = 0;
-    int high = arr.size() - 1;
-    while (low <= high) {
-        int mid = low + (high - low) / 2;
-        if (arr[mid] == target) {
-            return mid; // Target found
-        } else if (arr[mid] < target) {
-            low = mid + 1;
-        } else {
-            high = mid - 1;
-        }
+    int left = 0, right = arr.size() - 1;
+    while (left <= right) {
+        int mid = left + (right - left) / 2;
+        if (arr[mid] == target) return mid;
+        if (arr[mid] < target) left = mid + 1;
+        else right = mid - 1;
     }
-    return -1; // Target not found
+    return -1;
 }
 
 // Sequential Search
 int sequentialSearch(const vector<int>& arr, int target) {
-    for (int i = 0; i < arr.size(); ++i) {
-        if (arr[i] == target) {
-            return i; // Target found
-        }
+    for (size_t i = 0; i < arr.size(); ++i) {
+        if (arr[i] == target) return i;
     }
-    return -1; // Target not found
+    return -1;
 }
 
 int main() {
-    vector<int> arr = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
-    int target1 = 6; // An item that is in the list
-    int target2 = 20; // An item that is not in the list
+    vector<int> N_values = {5000, 50000, 100000, 150000, 1000000};
 
-    // Recursive Binary Search
-    int result = recursiveBinarySearch(arr, target1, 0, arr.size() - 1);
-    if (result != -1) {
-        cout << "Recursive Binary Search: Element found at index: " << result << endl;
-    } else {
-        cout << "Recursive Binary Search: Element not found in the array." << endl;
-    }
+    for (int N : N_values) {
+        double SumRBS = 0, SumIBS = 0, SumSeqS = 0;
 
-    result = recursiveBinarySearch(arr, target2, 0, arr.size() - 1);
-    if (result != -1) {
-        cout << "Recursive Binary Search: Element found at index: " << result << endl;
-    } else {
-        cout << "Recursive Binary Search: Element not found in the array." << endl;
-    }
+        for (int trial = 0; trial < 10; ++trial) {
+            vector<int> numbers;
+            for (int i = 0; i < N; ++i) {
+                numbers.push_back(rand() % (N * 10));
+            }
+            sort(numbers.begin(), numbers.end());
+            int target = rand() % (N * 10);
 
-    // Iterative Binary Search
-    result = iterativeBinarySearch(arr, target1);
-    if (result != -1) {
-        cout << "Iterative Binary Search: Element found at index: " << result << endl;
-    } else {
-        cout << "Iterative Binary Search: Element not found in the array." << endl;
-    }
+            // Measure Recursive Binary Search
+            auto start = chrono::high_resolution_clock::now();
+            recursiveBinarySearch(numbers, 0, N - 1, target);
+            auto end = chrono::high_resolution_clock::now();
+            SumRBS += chrono::duration_cast<chrono::microseconds>(end - start).count();
 
-    result = iterativeBinarySearch(arr, target2);
-    if (result != -1) {
-        cout << "Iterative Binary Search: Element found at index: " << result << endl;
-    } else {
-        cout << "Iterative Binary Search: Element not found in the array." << endl;
-    }
+            // Measure Iterative Binary Search
+            start = chrono::high_resolution_clock::now();
+            iterativeBinarySearch(numbers, target);
+            end = chrono::high_resolution_clock::now();
+            SumIBS += chrono::duration_cast<chrono::microseconds>(end - start).count();
 
-    // Sequential Search
-    result = sequentialSearch(arr, target1);
-    if (result != -1) {
-        cout << "Sequential Search: Element found at index: " << result << endl;
-    } else {
-        cout << "Sequential Search: Element not found in the array." << endl;
-    }
+            // Measure Sequential Search
+            start = chrono::high_resolution_clock::now();
+            sequentialSearch(numbers, target);
+            end = chrono::high_resolution_clock::now();
+            SumSeqS += chrono::duration_cast<chrono::microseconds>(end - start).count();
+        }
 
-    result = sequentialSearch(arr, target2);
-    if (result != -1) {
-        cout << "Sequential Search: Element found at index: " << result << endl;
-    } else {
-        cout << "Sequential Search: Element not found in the array." << endl;
+        cout << "For N = " << N << ":\n";
+        cout << "Average Running Time for Recursive Binary Search in microseconds: " << SumRBS / 10 << "\n";
+        cout << "Average Running Time for Iterative Binary Search in microseconds: " << SumIBS / 10 << "\n";
+        cout << "Average Running Time for Sequential Search in microseconds: " << SumSeqS / 10 << "\n\n";
     }
 
     return 0;
 }
+
