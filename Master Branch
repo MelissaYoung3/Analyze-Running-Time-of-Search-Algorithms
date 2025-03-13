@@ -52,25 +52,25 @@ int main() {
             auto start = chrono::high_resolution_clock::now();
             recursiveBinarySearch(numbers, 0, N - 1, target);
             auto end = chrono::high_resolution_clock::now();
-            SumRBS += chrono::duration_cast<chrono::microseconds>(end - start).count();
+            SumRBS += chrono::duration_cast<chrono::nanoseconds>(end - start).count();
 
             // Measure Iterative Binary Search
             start = chrono::high_resolution_clock::now();
             iterativeBinarySearch(numbers, target);
             end = chrono::high_resolution_clock::now();
-            SumIBS += chrono::duration_cast<chrono::microseconds>(end - start).count();
+            SumIBS += chrono::duration_cast<chrono::nanoseconds>(end - start).count();
 
             // Measure Sequential Search
             start = chrono::high_resolution_clock::now();
             sequentialSearch(numbers, target);
             end = chrono::high_resolution_clock::now();
-            SumSeqS += chrono::duration_cast<chrono::microseconds>(end - start).count();
+            SumSeqS += chrono::duration_cast<chrono::nanoseconds>(end - start).count();
         }
 
         cout << "For N = " << N << ":\n";
-        cout << "Average Running Time for Recursive Binary Search in microseconds: " << SumRBS / 10 << "\n";
-        cout << "Average Running Time for Iterative Binary Search in microseconds: " << SumIBS / 10 << "\n";
-        cout << "Average Running Time for Sequential Search in microseconds: " << SumSeqS / 10 << "\n\n";
+        cout << "Average Running Time for Recursive Binary Search in nanoseconds: " << SumRBS / 10 << "\n";
+        cout << "Average Running Time for Iterative Binary Search in nanoseconds: " << SumIBS / 10 << "\n";
+        cout << "Average Running Time for Sequential Search in nanoseconds: " << SumSeqS / 10 << "\n\n";
     }
 
     return 0;
